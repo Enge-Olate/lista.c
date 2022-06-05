@@ -1,0 +1,186 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <assert.h>
+#include <locale.h>
+int i;
+struct no{
+	int dado;
+	struct no *proximo;
+}; 
+
+struct lista{
+	int tamanho;
+	struct no *inicio;
+};
+
+struct lista *criarLista(){
+			 			 							 			
+	struct lista *novaLista = (struct lista*) malloc(sizeof(struct lista));
+	novaLista->inicio = NULL;
+	novaLista->tamanho = 0;
+	return novaLista;
+}
+
+bool vazia(struct lista *lista){
+	
+	assert(lista != NULL);
+	if(lista->tamanho == 0){
+	   return true;
+	}else{
+		 return false;
+	}
+	
+}
+
+void inserir(struct lista *lista, int posicao, int dado){
+	
+	assert(lista != NULL);
+	assert(posicao >= 0 && posicao <= lista->tamanho);
+	struct no *novoNo = (struct no*) malloc(sizeof(struct no));
+	novoNo->dado =  dado;
+	
+	if(posicao == 0){
+		
+		novoNo->proximo = lista->inicio;
+	  lista->inicio = novoNo;
+		
+	}else{
+		
+		struct no *aux = lista->inicio;
+		for(i = 1; i < posicao - 1; i++){
+			aux = aux->proximo;
+		}
+		novoNo->proximo = aux->proximo;
+		aux->proximo = novoNo;
+		
+	}
+	lista->tamanho ++;
+	
+	
+	
+}
+
+void imprimeDado(struct lista* lista){
+	assert(lista != NULL);
+
+	puts("\t\t\tLista de dados :");
+	putchar('\n');
+	struct no *aux = lista->inicio;
+	for(i = 0; i < lista->tamanho; i++){
+		printf("\t\tPosição = [%d] dado = %d\n",i,aux->dado);
+		aux = aux->proximo;
+	}
+	tamanho(lista);
+
+}
+
+void tamanho(struct lista *lista){
+	
+	assert(lista != NULL);
+	
+	printf("Quantidade de dados : %d\n",lista->tamanho);
+}
+
+void pegarDado(struct lista *lista, int posicao){
+	
+	
+	assert(lista != NULL);
+	assert(posicao >=0 && posicao < lista->tamanho);
+	
+	struct no *aux = lista->inicio;
+	for(i = 0; i < posicao ; i++){
+		aux = aux->proximo;
+	}
+	
+	printf("Escolha uma posição para ver o dado: ");
+	scanf("%d",&posicao);
+	printf("%d\n",aux->dado);
+}
+
+
+int removerDado(struct lista *lista, int posicao){
+	
+	assert(vazia(lista) == false);
+	assert(posicao >= 0 && posicao < lista->tamanho);
+	
+	struct no *anterior = NULL;
+	struct no *aux = lista->inicio;
+	
+	for(i = 0;i < posicao; i++){
+		
+		anterior = aux;
+		aux = aux->proximo;
+	}
+	
+	if(anterior == NULL){
+		lista->inicio = aux->proximo;
+	}else{
+		anterior->proximo = aux->proximo;
+	}
+	
+	int elemento;
+	elemento = aux->dado;
+	lista->tamanho --;
+	free(aux);
+	
+	return elemento;
+
+}
+
+void menu(){
+	
+	int opcao,
+	        x,
+	        y,
+	        k;
+	struct lista *minhaLista = criarLista();
+	do{
+	  imprimeDado(minhaLista);        
+		puts("\n");
+		puts("\tEscolha umaa opção para fazer uso do programa.");
+		putchar('\n');
+		puts("\t\t[1]>>Para insira dados na lista");
+		puts("\t\t[2]>>Para remover dados");
+		puts("\t\t[3]>>Para sair do programa");
+		scanf("%d",&opcao);
+		switch(opcao){
+			
+			case 1 : 	printf("Entre com a posição para inserir o dado partindo de zero :");
+								scanf("%d",&x);
+								printf("Entre com o dado:");
+								scanf("%d",&y);
+								inserir(minhaLista,x,y);
+								system("cls");
+								break;
+								
+			
+			case 2 : 	printf("Digite a posição do dado para removelo:");
+			          scanf("%d",&k);
+			          removerDado(minhaLista,k);
+			          system("cls");
+			          break;
+			          
+		  case 3 :  puts("Saindo do programa!");
+                break;            
+								
+								
+								
+			default : system("cls"); 
+			          
+			         
+			            						  						
+		}
+		
+	
+	}while(opcao != 3);
+}
+
+
+int main(){
+setlocale(LC_ALL,"");
+menu();
+
+return 0;	
+}
+
